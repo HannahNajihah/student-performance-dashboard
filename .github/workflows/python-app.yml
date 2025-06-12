@@ -7,8 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -21,8 +20,8 @@ jobs:
         pip install -r requirements.txt
         pip install pytest
 
-    - name: Train model and save .pkl file
-      run: python src/model.py
+    - name: Train model before testing  # ✅ NEW STEP
+      run: python run_model.py          # ✅ This creates exam_score_model.pkl
 
     - name: Run tests
       run: pytest tests/

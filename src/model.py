@@ -14,7 +14,7 @@ def train_model(df):
 
 if __name__ == "__main__":
     # ✅ Replace this path with your actual cleaned dataset
-    df = pd.read_csv("data/processed_student_data.csv")
+    df = pd.read_csv("data/student_performance.csv")
 
     model = train_model(df)
 
