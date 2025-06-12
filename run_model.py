@@ -1,13 +1,11 @@
 # run_model.py
 
-import pandas as pd
 from src.preprocess import preprocess_data
 from src.model import train_model
 import joblib
 
 # Load and preprocess the dataset
-df = pd.read_csv("data/student_performance.csv")
-df_clean = preprocess_data(df)
+df_clean = preprocess_data('data/student_performance.csv')
 
 # Train the model and save it
 model = train_model(df_clean)

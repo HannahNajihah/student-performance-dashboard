@@ -1,7 +1,7 @@
 import pandas as pd
 import joblib  # Required for saving the model
 
-def load_and_clean_data(path='data/student_performance.csv'):
+def preprocess_data(path='data/student_performance.csv'):
     # Load data
     df = pd.read_csv(path)
 
