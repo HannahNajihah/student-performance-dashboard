@@ -1,9 +1,14 @@
+# run_model.py
+
 import pandas as pd
-from src.preprocess import load_and_clean_data
+from src.preprocess import preprocess_data
 from src.model import train_model
 import joblib
 
-df = load_and_clean_data()
-model = train_model(df)
-joblib.dump(model, 'src/exam_score_model.pkl')
-print("✅ Model trained and saved as 'src/exam_score_model.pkl'")
+# Load and preprocess the dataset
+df = pd.read_csv("data/student_performance.csv")
+df_clean = preprocess_data(df)
+
+# Train the model and save it
+model = train_model(df_clean)
+joblib.dump(model, "src/exam_score_model.pkl")

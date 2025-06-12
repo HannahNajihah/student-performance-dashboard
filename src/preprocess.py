@@ -1,74 +1,66 @@
 import pandas as pd
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import train_test_split
+import joblib  # Required for saving the model
 
 def load_and_clean_data(path='data/student_performance.csv'):
-    # Load dataset
+    # Load data
     df = pd.read_csv(path)
 
-    # Drop duplicate rows
+    # Remove duplicates
     df.drop_duplicates(inplace=True)
 
     # Handle missing values
     for col in df.columns:
         if df[col].dtype == 'object':
-            df[col].fillna(df[col].mode()[0], inplace=True)
+            df[col] = df[col].fillna(df[col].mode()[0])
         else:
-            df[col].fillna(df[col].median(), inplace=True)
+            df[col] = df[col].fillna(df[col].median())
 
-    # Strip whitespaces in column names and string values
+    # Strip whitespace from column names and string entries
     df.columns = df.columns.str.strip()
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    df = df.apply(lambda col: col.str.strip() if col.dtype == "object" else col)
 
-    # Ordinal Encoding
-    ordinal_mappings = {
+    # Ordinal encoding
+    ordinal_features = {
         'Parental_Involvement': ['Low', 'Medium', 'High'],
         'Motivation_Level': ['Low', 'Medium', 'High'],
         'Family_Income': ['Low', 'Medium', 'High']
     }
+    for col, categories in ordinal_features.items():
+        if col in df.columns:
+            df[col] = pd.Categorical(df[col], categories=categories, ordered=True).codes
 
-    for col, order in ordinal_mappings.items():
-        df[col] = pd.Categorical(df[col], categories=order, ordered=True).codes
-
-    # Binary Encoding
-    binary_mappings = {
+    # Binary encoding
+    binary_features = {
         'Internet_Access': {'No': 0, 'Yes': 1},
         'Extracurricular_Activities': {'No': 0, 'Yes': 1}
     }
+    for col, mapping in binary_features.items():
+        if col in df.columns:
+            df[col] = df[col].map(mapping)
 
-    for col, mapping in binary_mappings.items():
-        df[col] = df[col].map(mapping)
-
-    # One-hot encode categorical features (if any)
+    # One-hot encoding for Gender
+    # Keep original Gender column for dashboard filtering
+    df['Original_Gender'] = df['Gender']
     if 'Gender' in df.columns:
         df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
 
-    # Remove outliers based on IQR (optional)
-    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    # One-hot encode any remaining categorical variables
+    remaining_cats = df.select_dtypes(include='object').columns
+    if len(remaining_cats) > 0:
+        df = pd.get_dummies(df, columns=remaining_cats, drop_first=True)
+
+
+    # Outlier removal using IQR
+    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
     for col in numeric_cols:
         Q1 = df[col].quantile(0.25)
         Q3 = df[col].quantile(0.75)
         IQR = Q3 - Q1
-        lower = Q1 - 1.5 * IQR
-        upper = Q3 + 1.5 * IQR
-        df = df[(df[col] >= lower) & (df[col] <= upper)]
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+
+    # Print data types for inspection
+    print(df.dtypes)
 
     return df
-
-
-def get_features_and_target(df, target_column='Exam_Score', scale=True):
-    X = df.drop(target_column, axis=1)
-    y = df[target_column]
-
-    if scale:
-        scaler = MinMaxScaler()
-        X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
-        return X_scaled, y, scaler
-    else:
-        return X, y, None
-
-
-def get_train_test_data(df, test_size=0.2, random_state=42):
-    X, y, scaler = get_features_and_target(df)
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
