@@ -1,8 +1,12 @@
 import joblib
-import os
 import streamlit as st
 import pandas as pd
+import sys
+import os
+# Add project root to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.preprocess import preprocess_data
+
 
 # Load model
 model_path = "src/exam_score_model.pkl"
@@ -18,6 +22,10 @@ else:
 
 # Load and clean data
 df = preprocess_data()
+
+print("📸 Sample of Cleaned Dataset:")
+print(df.head())
+
 
 st.title("🎓 Student Performance Dashboard")
 
@@ -60,11 +68,11 @@ sample_input = {
 }
 
 # Add gender if available
-if 'Gender_Male' in load_and_clean_data().columns and gender_male_flag is not None:
+if 'Gender_Male' in df.columns and gender_male_flag is not None:
     sample_input['Gender_Male'] = gender_male_flag
 
 # Ensure correct feature order
-X_columns = load_and_clean_data().drop(columns=['Exam_Score']).columns.tolist()
+X_columns = df.drop(columns=['Exam_Score']).columns.tolist()
 sample_df = pd.DataFrame([sample_input])
 
 # Fill in any missing columns
