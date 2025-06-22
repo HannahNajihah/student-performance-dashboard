@@ -1,26 +1,55 @@
 import pandas as pd
+import joblib
 
 def preprocess_data(path='data/student_performance.csv'):
-    df = pd.read_csv(path).drop_duplicates()
-    
+    # Load data
+    df = pd.read_csv(path)
+
+    # Remove duplicates
+    df.drop_duplicates(inplace=True)
+
+    # Fill missing values
     for col in df.columns:
-        df[col] = df[col].fillna(df[col].mode()[0] if df[col].dtype == 'object' else df[col].median())
+        if df[col].dtype == 'object':
+            df[col] = df[col].fillna(df[col].mode()[0])
+        else:
+            df[col] = df[col].fillna(df[col].median())
 
+    # Clean column names and strip whitespace
     df.columns = df.columns.str.strip()
-    df = df.apply(lambda x: x.str.strip() if x.dtype == 'object' else x)
+    df = df.apply(lambda col: col.str.strip() if col.dtype == "object" else col)
 
-    ordinal = ['Parental_Involvement','Motivation_Level','Family_Income','Access_to_Resources','Teacher_Quality','Parental_Education_Level']
-    for col in ordinal:
-        if col in df: df[col] = pd.Categorical(df[col]).codes
+    # Keep original columns for UI filters
+    df['Original_Gender'] = df['Gender']
+    df['Original_School_Type'] = df['School_Type']
+    df['Original_Peer_Influence'] = df['Peer_Influence']
 
-    for col in ['Internet_Access','Extracurricular_Activities','Learning_Disabilities']:
-        if col in df: df[col] = df[col].map({'Yes':1,'No':0})
+    # Ordinal encoding
+    ordinal_features = {
+        'Parental_Involvement': ['Low', 'Medium', 'High'],
+        'Motivation_Level': ['Low', 'Medium', 'High'],
+        'Family_Income': ['Low', 'Medium', 'High'],
+        'Access_to_Resources': ['Low', 'Medium', 'High'],
+        'Teacher_Quality': ['Low', 'Medium', 'High'],
+        'Parental_Education_Level': ['High School', 'College', 'Postgraduate'],
+        'Distance_from_Home': ['Near', 'Moderate', 'Far']
+    }
+    for col, categories in ordinal_features.items():
+        if col in df.columns:
+            df[col] = pd.Categorical(df[col], categories=categories, ordered=True).codes
 
-    if 'Peer_Influence' in df:
-        df = pd.get_dummies(df, columns=['Peer_Influence'], drop_first=True)
+    # Binary encoding
+    binary_features = {
+        'Internet_Access': {'No': 0, 'Yes': 1},
+        'Extracurricular_Activities': {'No': 0, 'Yes': 1},
+        'Learning_Disabilities': {'No': 0, 'Yes': 1}
+    }
+    for col, mapping in binary_features.items():
+        if col in df.columns:
+            df[col] = df[col].map(mapping)
 
-    if 'Gender' in df:
-        df['Original_Gender'] = df['Gender']
-        df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
+    # One-hot encoding for nominal categorical variables
+    one_hot_features = ['Gender', 'School_Type', 'Peer_Influence']
+    df = pd.get_dummies(df, columns=one_hot_features, drop_first=True)
 
     return df
