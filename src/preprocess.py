@@ -1,12 +1,13 @@
 import pandas as pd
-import joblib  # Required for saving the model
+import joblib
 
 def preprocess_data(path='data/student_performance.csv'):
-    # Load data
     df = pd.read_csv(path)
 
-    # Remove duplicates
+    # Remove duplicates and strip whitespace
     df.drop_duplicates(inplace=True)
+    df.columns = df.columns.str.strip()
+    df = df.apply(lambda col: col.str.strip() if col.dtype == "object" else col)
 
     # Handle missing values
     for col in df.columns:
@@ -15,54 +16,41 @@ def preprocess_data(path='data/student_performance.csv'):
         else:
             df[col] = df[col].fillna(df[col].median())
 
-    # Strip whitespace from column names and string entries
-    df.columns = df.columns.str.strip()
-    df = df.apply(lambda col: col.str.strip() if col.dtype == "object" else col)
-
     # Ordinal encoding
-    ordinal_features = {
+    ordinal_map = {
         'Parental_Involvement': ['Low', 'Medium', 'High'],
         'Motivation_Level': ['Low', 'Medium', 'High'],
         'Family_Income': ['Low', 'Medium', 'High']
     }
-    for col, categories in ordinal_features.items():
+    for col, levels in ordinal_map.items():
         if col in df.columns:
-            df[col] = pd.Categorical(df[col], categories=categories, ordered=True).codes
+            df[col] = pd.Categorical(df[col], categories=levels, ordered=True).codes
 
     # Binary encoding
-    binary_features = {
+    binary_map = {
         'Internet_Access': {'No': 0, 'Yes': 1},
         'Extracurricular_Activities': {'No': 0, 'Yes': 1}
     }
-    for col, mapping in binary_features.items():
+    for col, mapping in binary_map.items():
         if col in df.columns:
             df[col] = df[col].map(mapping)
 
-    # One-hot encoding for Gender
-    # Keep original Gender column for dashboard filtering
+    # Save original gender for dashboard filter
     df['Original_Gender'] = df['Gender']
     if 'Gender' in df.columns:
         df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
 
-    # One-hot encode any remaining categorical variables
+    # One-hot encode any other categorical variables
     remaining_cats = df.select_dtypes(include='object').columns
     if len(remaining_cats) > 0:
         df = pd.get_dummies(df, columns=remaining_cats, drop_first=True)
 
-
-    # Outlier removal using IQR
-    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
-    for col in numeric_cols:
-     if col == 'Exam_Score':
-        continue  # Don't filter score
-     Q1 = df[col].quantile(0.25)
-     Q3 = df[col].quantile(0.75)
-     IQR = Q3 - Q1
-     lower_bound = Q1 - 1.5 * IQR
-     upper_bound = Q3 + 1.5 * IQR
-     df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
-
-    # Print data types for inspection
-    print(df.dtypes)
+    # Remove outliers (except Exam_Score) using IQR
+    for col in df.select_dtypes(include=['int64', 'float64']).columns:
+        if col == 'Exam_Score':
+            continue
+        Q1, Q3 = df[col].quantile([0.25, 0.75])
+        IQR = Q3 - Q1
+        df = df[(df[col] >= Q1 - 1.5 * IQR) & (df[col] <= Q3 + 1.5 * IQR)]
 
     return df
