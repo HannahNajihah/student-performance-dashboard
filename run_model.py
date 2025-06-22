@@ -1,12 +1,9 @@
-# run_model.py
-
 from src.preprocess import preprocess_data
-from src.model import train_model
+from sklearn.linear_model import LinearRegression
 import joblib
 
-# Load and preprocess the dataset
-df_clean = preprocess_data('data/student_performance.csv')
-
-# Train the model and save it
-model = train_model(df_clean)
-joblib.dump(model, "src/exam_score_model.pkl")
+df = preprocess_data()
+X = df.drop('Exam_Score', axis=1)
+y = df['Exam_Score']
+model = LinearRegression().fit(X, y)
+joblib.dump(model, 'src/exam_score_model.pkl')
