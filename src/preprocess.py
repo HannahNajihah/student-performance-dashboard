@@ -39,28 +39,14 @@ def preprocess_data(path='data/student_performance.csv'):
             df[col] = df[col].map(mapping)
 
     # One-hot encoding for Gender
-    # Keep original Gender column for dashboard filtering
     df['Original_Gender'] = df['Gender']
     if 'Gender' in df.columns:
         df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
 
-    # One-hot encode any remaining categorical variables
+    # One-hot encode remaining categorical features
     remaining_cats = df.select_dtypes(include='object').columns
     if len(remaining_cats) > 0:
         df = pd.get_dummies(df, columns=remaining_cats, drop_first=True)
-
-
-    # Outlier removal using IQR
-    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
-    for col in numeric_cols:
-     if col == 'Exam_Score':
-        continue  # Don't filter score
-     Q1 = df[col].quantile(0.25)
-     Q3 = df[col].quantile(0.75)
-     IQR = Q3 - Q1
-     lower_bound = Q1 - 1.5 * IQR
-     upper_bound = Q3 + 1.5 * IQR
-     df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
 
     # Print data types for inspection
     print(df.dtypes)
