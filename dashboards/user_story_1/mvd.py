@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 import streamlit as st
 import pandas as pd
@@ -9,8 +9,8 @@ import joblib
 from src.preprocess import preprocess_data
 
 # --- Page Config ---
-st.set_page_config(page_title="🎓 MVP: Student Performance", layout="wide")
-st.title("🎓 MVP: Student Performance Dashboard")
+st.set_page_config(page_title="🎓 Student Performance", layout="wide")
+st.title("🎓 Student Performance Dashboard")
 
 # --- Load data ---
 df = preprocess_data()
@@ -23,11 +23,6 @@ if os.path.exists(model_path):
         model = joblib.load(model_path)
     except Exception as e:
         st.warning(f"⚠️ Could not load model: {e}")
-
-# --- Sidebar filter ---
-st.sidebar.header("🔎 Filter")
-attendance = st.sidebar.slider("Minimum Attendance (%)", 0, 100, 75)
-df = df[df['Attendance'] >= attendance]
 
 # --- Show key student records ---
 st.subheader("📋 Sample Student Records")
@@ -49,8 +44,7 @@ if model is not None:
         sleep = col1.slider("Sleep Hours", 0, 12, 7)
         study = col1.slider("Hours Studied", 0, 40, 10)
         attendance_input = col2.slider("Attendance (%)", 0, 100, 80)
-        motivation = col2.selectbox("Motivation Level", ['Low', 'Medium', 'High'])
-        involvement = col2.selectbox("Parental Involvement", ['Low', 'Medium', 'High'])
+        previous_score = col2.slider("🕒 Previous Test Score", 0, 100, 60)  # ✅ added here
         submitted = st.form_submit_button("Predict")
 
     if submitted:
@@ -58,8 +52,7 @@ if model is not None:
             "Sleep_Hours": sleep,
             "Hours_Studied": study,
             "Attendance": attendance_input,
-            "Motivation_Level": ['Low', 'Medium', 'High'].index(motivation),
-            "Parental_Involvement": ['Low', 'Medium', 'High'].index(involvement),
+            "Previous_Scores": previous_score,  # ✅ include here
             "Distance_from_Home": 5,
             "Family_Income": 1,
             "Internet_Access": 1,
@@ -75,5 +68,7 @@ if model is not None:
 
         pred = model.predict(input_df)[0]
         st.success(f"✅ Predicted Exam Score: **{pred:.2f}**")
+
 else:
     st.warning("⚠️ Prediction unavailable – model not found.")
+

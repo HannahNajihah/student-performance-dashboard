@@ -37,7 +37,7 @@ col1, col2 = st.columns(2)
 
 # 📊 Scatter Plot
 with col1:
-    st.subheader("📊 Sleep vs Exam Score (Interactive)")
+    st.subheader("📊 Sleep vs Exam Score")
     fig = px.scatter(
         df,
         x="Sleep_Hours",
@@ -57,6 +57,8 @@ with col2:
                    labels={"Sleep_Hours": "Sleep Hours", "Exam_Score": "Average Score"})
     st.plotly_chart(fig2, use_container_width=True)
 
+
+
 # --- Prediction Section ---
 st.markdown("---")
 st.subheader("🎯 Predict Exam Score")
@@ -68,8 +70,6 @@ if model is not None:
         sleep = colA.slider("Sleep Hours", 0, 12, 7)
         study = colA.slider("Hours Studied", 0, 40, 10)
         attendance = colB.slider("Attendance (%)", 0, 100, 80)
-        motivation = colB.selectbox("Motivation Level", ['Low', 'Medium', 'High'])
-        involvement = colC.selectbox("Parental Involvement", ['Low', 'Medium', 'High'])
         submitted = st.form_submit_button("Predict")
 
     if submitted:
@@ -78,8 +78,6 @@ if model is not None:
             "Sleep_Hours": sleep,
             "Hours_Studied": study,
             "Attendance": attendance,
-            "Motivation_Level": ['Low', 'Medium', 'High'].index(motivation),
-            "Parental_Involvement": ['Low', 'Medium', 'High'].index(involvement),
             "Distance_from_Home": 5,
             "Family_Income": 1,
             "Internet_Access": 1,
