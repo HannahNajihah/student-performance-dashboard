@@ -43,7 +43,6 @@ with col1:
         x="Sleep_Hours",
         y="Exam_Score",
         color="Original_Gender" if 'Original_Gender' in df.columns else None,
-        trendline="ols",
         labels={"Sleep_Hours": "Sleep Hours", "Exam_Score": "Exam Score"},
         title="Scatter Plot with Trendline"
     )
