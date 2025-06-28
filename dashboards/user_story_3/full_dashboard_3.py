@@ -35,7 +35,6 @@ fig1 = px.scatter(
     df,
     x="Attendance",
     y="Exam_Score",
-    trendline="ols",
     color_discrete_sequence=["blue"],
     title="Attendance vs Exam Score"
 )
