@@ -4,5 +4,6 @@ streamlit
 pytest
 joblib
 plotly
+scipy==1.10.1 
 statsmodels
-scipy==1.10.1  # ✅ compatible version
+ # ✅ compatible version
