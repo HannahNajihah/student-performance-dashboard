@@ -10,7 +10,7 @@ from src.preprocess import preprocess_data
 
 # --- Page Config ---
 st.set_page_config(page_title="🛌 Sleep & Exam Score Dashboard", layout="wide")
-st.title("🛌 Sleep Hours & Exam Score Interactive Dashboard")
+st.title("🛌 Sleep Duration and Exam Score Analysis")
 
 # --- Load Data ---
 df = preprocess_data()
@@ -44,7 +44,7 @@ with col1:
         y="Exam_Score",
         color="Original_Gender" if 'Original_Gender' in df.columns else None,
         labels={"Sleep_Hours": "Sleep Hours", "Exam_Score": "Exam Score"},
-        title="Scatter Plot with Trendline"
+        title="Scatter Plot"
     )
     st.plotly_chart(fig, use_container_width=True)
 
