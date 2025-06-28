@@ -3,6 +3,6 @@ scikit-learn
 streamlit
 pytest
 joblib
-plotly
-scipy
-statsmodels
+plotly>=5.0.0
+statsmodels>=0.13.0
+scipy>=1.6.0
