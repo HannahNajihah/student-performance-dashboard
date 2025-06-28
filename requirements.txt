@@ -5,5 +5,4 @@ pytest
 joblib
 plotly
 statsmodels
-scipy
-# Additional libraries for data visualization and analysis
+scipy==1.10.1  # ✅ compatible version
