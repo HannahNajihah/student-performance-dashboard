@@ -33,7 +33,7 @@ There are two versions of the Streamlit dashboard in the `dashboards/` folder:
 ```bash
 streamlit run dashboards/mvp_dashboard.py
 
-### To run the MVP dashboard:  
+### To run the full dashboard:  
 
-```bash
 streamlit run dashboards/full_dashboard.py
+
