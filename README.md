@@ -1,23 +1,35 @@
-# 📊 Student Performance Dashboard  
+# 🎓 Agile Data Science for Student Performance Prediction and Visualisation
 
-This project presents a **full-stack data science application** that combines **Streamlit** for interactive visualisation and **Power BI** for in-depth reporting.  
+## 📌 Overview
+Student performance is shaped by a mix of academic and non-academic factors such as **study time, sleep, attendance, and motivation**. This project applies **Agile Data Science techniques** to educational data, using **explainable machine learning** and **interactive Streamlit dashboards** to uncover performance drivers and predict exam outcomes.  
 
-The dashboard analyses **student academic performance** with respect to socio-demographic factors, providing **actionable insights** for educators and policymakers.  
+The goal is to support:
+- **Teachers** in monitoring performance, predicting scores, and identifying high-risk students.
+- **Students** in exploring lifestyle factors like sleep habits to improve study strategies.
+- **Institutions** in promoting early intervention through data-driven insights.  
 
 ---
 
-## ✨ Features  
+## 🚀 Features
+### Dashboards (Streamlit)
+1. **Exam Score Predictor (Teachers)**  
+   - Predict scores using study time, sleep hours, and attendance.  
+   - “What-if” scenarios for personalised teaching strategies.  
 
-- **Interactive Dashboard**  
-  Built with Streamlit and integrated with Power BI for dynamic and user-friendly exploration of student performance data.  
+2. **Sleep vs Performance Analysis (Students)**  
+   - Explore how sleep duration influences grades.  
+   - Interactive scatter plots, trendlines, and prediction forms.  
 
-- **Automated Data Processing**  
-  Preprocessing pipeline developed with modular Python scripts for cleaning, transformation, and outlier detection.  
-  Continuous Integration and Deployment (CI/CD) using GitHub Actions ensures reproducibility and automated updates.  
+3. **High-Risk Student Identifier (Teachers)**  
+   - Highlight students at risk of underperformance.  
+   - Custom risk thresholds, scatter plots, and student tables.  
 
-- **Agile Development**  
-  Managed with Asana and GitHub Projects to track progress and ensure iterative delivery.  
-  Collaborative workflow following Agile best practices for team coordination.  
+### Development Highlights
+- ✅ **Agile Workflow** with sprints and user stories (managed in Asana).  
+- ✅ **Preprocessing Pipeline**: missing values, encoding, outlier removal.  
+- ✅ **Regression Model** integrated with dashboards.  
+- ✅ **CI/CD with GitHub Actions** for testing and deployment.  
+- ✅ **MVD (Minimum Viable Dashboard)** → Iterative feature expansion.  
 
 ---
 
@@ -26,5 +38,3 @@ The dashboard analyses **student academic performance** with respect to socio-de
 2. Dashboard User Story 2 - https://student-performance-dashboard-userstory2.streamlit.app/
 3. Dashboard User Story 3 - https://student-performance-dashboard-userstory3.streamlit.app/
 4. Asana - https://app.asana.com/1/1210529551562993/project/1210529567257748/list/1210529580333589
-
-
