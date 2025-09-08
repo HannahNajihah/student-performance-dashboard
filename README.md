@@ -21,19 +21,10 @@ The dashboard analyses **student academic performance** with respect to socio-de
 
 ---
 
-## 🖥️ Running the Dashboards  
+## Dashboards:
+1. MVD User Story 1 - https://student-performance-userstory1-mvd.streamlit.app/
+2. Dashboard User Story 2 - https://student-performance-dashboard-userstory2.streamlit.app/
+3. Dashboard User Story 3 - https://student-performance-dashboard-userstory3.streamlit.app/
+4. Asana - https://app.asana.com/1/1210529551562993/project/1210529567257748/list/1210529580333589
 
-There are two versions of the Streamlit dashboard in the `dashboards/` folder:  
-
-- `mvp_dashboard.py` → Minimal version with data filtering and statistics only  
-- `full_dashboard.py` → Full version with prediction using a trained model  
-
-### To run the MVP dashboard:  
-
-```bash
-streamlit run dashboards/mvp_dashboard.py
-
-### To run the full dashboard:  
-
-streamlit run dashboards/full_dashboard.py
 
